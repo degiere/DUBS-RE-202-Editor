@@ -1,0 +1,374 @@
+<!doctype html>
+<!-- Copyright (c) 2026, Chris De Giere <https://chrisdegiere.com>
+     Licensed under CC BY-NC-SA 4.0. See LICENSE. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RE-202 probe</title>
+<style>
+  :root { --green: #1F4C37; --black: #1A1B1C; --silver: #B8B8BC; --red: #B0252A; }
+  body { margin: 0; padding: 24px 32px 64px; background: var(--black); color: #E4E4E6; font: 14px/1.45 -apple-system, "Helvetica Neue", sans-serif; }
+  h1 { margin: 0 0 4px; font-size: 20px; letter-spacing: .12em; color: var(--silver); }
+  h2 { margin: 0 0 6px; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--silver); }
+  p { margin: 0 0 8px; max-width: 76ch; }
+  section { margin: 16px 0; padding: 14px 16px; border-radius: 6px; background: #232526; border-left: 4px solid var(--green); }
+  button, select { font: inherit; color: #E4E4E6; background: #34383A; border: 1px solid #55595C; border-radius: 4px; padding: 4px 10px; margin: 2px 4px 2px 0; cursor: pointer; }
+  button:hover { background: var(--green); }
+  button:disabled { opacity: .4; cursor: default; }
+  button.warn { border-color: var(--red); }
+  button.said { background: var(--green); border-color: #6FB392; }
+  label { margin-right: 14px; }
+  pre { margin: 8px 0 0; padding: 8px 10px; background: #141516; border-radius: 4px; font: 12px/1.5 ui-monospace, Menlo, monospace; white-space: pre-wrap; max-height: 260px; overflow: auto; }
+  pre:empty { display: none; }
+  textarea { width: 100%; box-sizing: border-box; height: 190px; background: #141516; color: #E4E4E6; border: 1px solid #55595C; border-radius: 4px; padding: 8px 10px; font: 12px/1.5 ui-monospace, Menlo, monospace; }
+  .ask { margin-top: 8px; color: var(--silver); }
+  #status { color: #8FD0AC; }
+</style>
+</head>
+<body>
+<h1>RE-202 PROBE</h1>
+<p>Six checks against the pedal. Cable the pedal's MIDI OUT back to the computer, run them top to bottom, then copy the results at the bottom.</p>
+
+<section>
+  <h2>Ports</h2>
+  <button id="connect">Connect MIDI</button>
+  <label>To pedal <select id="out"></select></label>
+  <label>From pedal <select id="in"></select></label>
+  <label>Channel <select id="channel"></select></label>
+  <span id="status"></span>
+</section>
+
+<section>
+  <h2>1. Does the pedal answer?</h2>
+  <p>Sends an Identity Request, then asks for the system settings.</p>
+  <button data-run="answers">Ask the pedal</button>
+  <pre id="o-answers"></pre>
+</section>
+
+<section>
+  <h2>2. Is 20 00 00 00 the memory being played?</h2>
+  <p>Set the pedal to MANUAL and press Read. Turn SATURATION on the pedal and press Read again. Then step the pedal to memory 1 and repeat. Each read lists what changed at 20 00 00 00 and in the MANUAL slot.</p>
+  <button data-run="current">Read</button>
+  <pre id="o-current"></pre>
+</section>
+
+<section>
+  <h2>3. Does a one-byte write change the sound at once?</h2>
+  <p>Each button writes one byte. Watch the HEAD lamps and listen.</p>
+  <label>Write to <select id="target"><option value="current">20 00 00 00</option><option value="manual">MANUAL slot, 20 10 00 00</option></select></label>
+  <div id="modes"></div>
+  <div><button data-send="tape:0">Tape NEW</button><button data-send="tape:1">Tape AGED</button>
+    <button data-send="reverb_sw:0">Reverb off</button><button data-send="reverb_sw:1">Reverb on</button><span id="types"></span></div>
+  <button data-run="readback">Read it back</button>
+  <div class="ask">The pedal changed at once? <button data-say="live:yes">Yes</button><button data-say="live:no">No</button><button data-say="live:only after recalling the memory">Only after a recall</button></div>
+  <pre id="o-live"></pre>
+</section>
+
+<section>
+  <h2>4. Do system settings apply without a power cycle?</h2>
+  <p>Run check 1 first. INPUT shows on the pedal's GUITAR / LINE lamps; Direct Sound off mutes the dry signal.</p>
+  <button data-sys="input:0">Input GUITAR</button><button data-sys="input:1">Input LINE</button>
+  <button data-sys="direct:0">Direct Sound off</button><button data-sys="direct:1">Direct Sound on</button>
+  <button data-run="restore">Put both back</button>
+  <div class="ask">The pedal followed? <button data-say="system:yes">Yes</button><button data-say="system:no">No</button></div>
+  <pre id="o-system"></pre>
+</section>
+
+<section>
+  <h2>5. Control changes, both ways</h2>
+  <p>The buttons send Echo Vol on the channel above. Then turn any knob on the pedal and press its MEMORY switch: what arrives shows here.</p>
+  <button data-cc="19:0">Echo Vol 0</button><button data-cc="19:100">Echo Vol 100</button>
+  <div class="ask">The echo dropped out and came back? <button data-say="cc:yes">Yes</button><button data-say="cc:no">No</button></div>
+  <pre id="o-cc"></pre>
+</section>
+
+<section>
+  <h2>6. Does SysEx get through with Rx Ch OFF?</h2>
+  <p>Run check 1 first. Sets Rx Ch to OFF, asks the pedal a question, then sets Rx Ch back. If the pedal stops answering, set its MIDI channel again from the power-on menu.</p>
+  <button class="warn" data-run="rxoff">Try it</button>
+  <pre id="o-rxoff"></pre>
+</section>
+
+<section>
+  <h2>7. Tap time and the heads</h2>
+  <p>Play a single short note into the pedal after each button and count the repeats against a metronome or by ear. Each button loads a sound into the pedal with the tap time on, Intensity at 0 and Echo Vol up, so each playing head is heard once.</p>
+  <div><button data-tap="0:200">Mode 1, 200 ms</button><button data-tap="2:200">Mode 3, 200 ms</button><button data-tap="7:200">Mode 8, 200 ms</button><button data-tap="11:200">Mode 12, 200 ms</button><button data-tap="7:400">Mode 8, 400 ms</button><button data-tap="2:600:1">Mode 3, 600 ms, LONG</button></div>
+  <div><button data-tap-store="1">Write that sound to memory 127 and recall it</button><button data-cc="17:100">Repeat Rate to 100</button><button data-cc="17:20">Repeat Rate to 20</button></div>
+  <div class="ask">Head 1 lands on the tap time and the others on 2x, 3x and 4x? <button data-say="heads:yes">Yes</button><button data-say="heads:no">No</button></div>
+  <div class="ask">Mode 12's four echoes are evenly spaced? <button data-say="mode12:yes">Yes</button><button data-say="mode12:no, closer together">No, closer together</button></div>
+  <div class="ask">Mode 8 at 400 ms: head 4 arrives at 1.6 s? <button data-say="past1s:yes">Yes</button><button data-say="past1s:no, earlier">No, earlier</button><button data-say="past1s:no echo from head 4">No head 4</button></div>
+  <div class="ask">After the recall the time is the same? <button data-say="taprecall:yes">Yes</button><button data-say="taprecall:no">No</button></div>
+  <div class="ask">Repeat Rate changes the time while the tap time is on? <button data-say="rateovertap:yes">Yes</button><button data-say="rateovertap:no">No</button></div>
+  <pre id="o-tap"></pre>
+</section>
+
+<section>
+  <h2>8. Where does oscillation start?</h2>
+  <p>Pick a mode and tape, play one note, and raise Intensity until the repeats stop dying away. Record the lowest value that runs away.</p>
+  <div><button data-osc="0:0">Mode 1 NEW</button><button data-osc="0:1">Mode 1 AGED</button><button data-osc="6:0">Mode 7 NEW</button><button data-osc="6:1">Mode 7 AGED</button><button data-osc="11:0">Mode 12 NEW</button><button data-osc="11:1">Mode 12 AGED</button></div>
+  <div>Intensity <button data-int="-5">-5</button><button data-int="-1">-1</button><b id="int">64</b><button data-int="1">+1</button><button data-int="5">+5</button><button data-osc-say="1">It runs away here</button><button data-cc="18:0">Stop</button></div>
+  <pre id="o-osc"></pre>
+</section>
+
+<section>
+  <h2>Results</h2>
+  <textarea id="results" readonly></textarea>
+  <button id="copy">Copy results</button>
+</section>
+
+<section>
+  <h2>MIDI log</h2>
+  <button id="clear">Clear</button>
+  <pre id="log"></pre>
+</section>
+
+<script src="re202.js"></script>
+<script src="fake.js"></script>
+<script src="midi.js"></script>
+<script>
+'use strict';
+const R = RE202, $ = id => document.getElementById(id);
+const hex = a => Array.from(a).map(b => b.toString(16).padStart(2, '0')).join(' ');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const show = (p, v) => p.names ? p.names[v] ?? `?${v}` : p.key === 'mode' ? v + 1 : v;
+const link = new Link(), demo = new FakePedal();
+const state = { access: null, sys: null, prev: {}, heard: [] };
+
+// ---- results
+const LABELS = { ports: 'Ports', answers: '1 Identity', system: '1 System settings', current: '2 Playing memory', live: '3 One-byte writes',
+  wrote: '3 Sent', system_live: '4 System writes', sent_sys: '4 Sent', cc: '5 CC to pedal', from: '5 From pedal', rxoff: '6 SysEx with Rx Ch OFF',
+  tap_loaded: '7 Loaded', heads: '7 Heads on multiples', mode12: '7 Mode 12 even', past1s: '7 Head 4 past 1 s', tap_recalled: '7 Recall', taprecall: '7 Time after recall',
+  rateovertap: '7 Rate over tap', oscillation: '8 Oscillation' };
+const found = {};
+function note(key, text, add) {
+  found[key] = add && found[key] ? `${found[key]}; ${text}` : text;
+  $('results').value = Object.keys(LABELS).filter(k => found[k]).map(k => `${LABELS[k]}: ${found[k]}`).join('\n');
+}
+const out = (id, text) => { $('o-' + id).textContent = text; };
+
+// ---- log
+const lines = [];
+link.onLog = (dir, bytes) => {
+  lines.push(`${dir === 'out' ? '>' : '<'} ${hex(bytes)}`);
+  if (lines.length > 400) lines.shift();
+  $('log').textContent = lines.join('\n');
+  $('log').scrollTop = $('log').scrollHeight;
+};
+$('clear').onclick = () => { lines.length = 0; $('log').textContent = ''; };
+link.onCC = (ch, n, v) => heard(`CC ${n} = ${v} on channel ${ch}`, `CC on channel ${ch}`);
+link.onPC = (ch, p) => heard(`program change ${p} on channel ${ch}`, `PC on channel ${ch}`);
+function heard(line, kind) {
+  state.heard.push(line); if (state.heard.length > 12) state.heard.shift();
+  out('cc', state.heard.join('\n'));
+  if (!(found.from || '').includes(kind)) note('from', kind, true);
+}
+
+// ---- ports
+for (let c = 1; c <= 16; c++) $('channel').add(new Option(c, c));
+const channel = () => Number($('channel').value);
+function fill() {
+  for (const [sel, ports, fake] of [[$('out'), state.access?.outputs, demo.output], [$('in'), state.access?.inputs, demo.input]]) {
+    const was = sel.value;
+    sel.length = 0;
+    sel.add(new Option('none', ''));
+    sel.add(new Option(fake.name, fake.id));
+    if (ports) for (const p of ports.values()) sel.add(new Option(p.name, p.id));
+    if ([...sel.options].some(o => o.value === was)) sel.value = was;
+  }
+  pick();
+}
+function pick() {
+  const o = $('out').value, i = $('in').value;
+  const output = o === demo.output.id ? demo.output : state.access?.outputs.get(o);
+  const input = i === demo.input.id ? demo.input : state.access?.inputs.get(i);
+  link.use(output, input);
+  note('ports', `to pedal "${output?.name ?? 'none'}", from pedal "${input?.name ?? 'none'}", channel ${channel()}`);
+}
+$('out').onchange = $('in').onchange = $('channel').onchange = pick;
+$('connect').onclick = async () => {
+  try {
+    state.access = await navigator.requestMIDIAccess({ sysex: true });
+    state.access.onstatechange = fill;
+    $('status').textContent = 'MIDI with SysEx granted';
+  } catch (e) {
+    $('status').textContent = `Chrome refused MIDI with SysEx: ${e.message}`;
+  }
+  fill();
+};
+
+// ---- the checks
+const describe = (params, values) => params.map(p => `${p.label.padEnd(18)} ${show(p, values[p.key])}`).join('\n');
+const needSys = () => { if (!state.sys) throw new Error('run check 1 first, so the pedal\'s own settings are known'); };
+const target = () => $('target').value === 'manual' ? R.slotAddress(0) : R.CURRENT;
+
+const checks = {
+  async answers() {
+    const id = await link.identity();
+    const idLine = id ? `Identity Reply: device ID ${hex([id.dev])}, version ${hex(id.version)}` : 'No Identity Reply.';
+    note('answers', id ? `yes, device ID ${hex([id.dev])}, version ${hex(id.version)}` : 'no reply');
+    out('answers', idLine);
+    let data;
+    try { data = await link.request(R.SYSTEM, R.SYSTEM_SIZE); }
+    catch (e) { note('system', 'no answer to RQ1'); throw new Error(`${idLine}\n${e.message}`); }
+    state.sys = R.decode(R.SYSTEM_PARAMS, data);
+    if (state.sys.rx_ch) { $('channel').value = state.sys.rx_ch; pick(); }
+    note('system', `RQ1 answered, ${hex(data)}`);
+    out('answers', `${idLine}\n\n${describe(R.SYSTEM_PARAMS, state.sys)}`);
+  },
+
+  async current() {
+    const text = [], changed = [];
+    for (const [name, addr] of [['20 00 00 00', R.CURRENT], ['MANUAL slot', R.slotAddress(0)]]) {
+      const now = R.decode(R.MEMORY, await link.request(addr, R.MEMORY_SIZE)), was = state.prev[name];
+      const diff = was ? R.MEMORY.filter(p => now[p.key] !== was[p.key]).map(p => `${p.label} ${show(p, was[p.key])} > ${show(p, now[p.key])}`) : null;
+      state.prev[name] = now;
+      text.push(`${name}: ${diff ? (diff.length ? diff.join(', ') : 'no change') : 'first read'}`);
+      if (diff) changed.push(`${name}: ${diff.length ? diff.join(', ') : 'no change'}`);
+      text.push(describe(R.MEMORY.filter(p => p.group !== 'exp'), now), '');
+    }
+    if (changed.length) note('current', `[${changed.join(' | ')}]`, true);
+    out('current', text.join('\n'));
+  },
+
+  async readback() {
+    const now = R.decode(R.MEMORY, await link.request(target(), R.MEMORY_SIZE));
+    const line = `${hex(target())} holds Mode ${now.mode + 1}, Tape ${show(R.MEM.tape, now.tape)}, Reverb ${show(R.MEM.reverb_sw, now.reverb_sw)}, ${show(R.MEM.reverb_type, now.reverb_type)}`;
+    note('wrote', `read back: ${line}`, true);
+    out('live', line);
+  },
+
+  async restore() {
+    needSys();
+    for (const key of ['input', 'direct']) link.send(R.dt1(R.offset(R.SYSTEM, R.SYS[key].off), [state.sys[key]]));
+    await sleep(100);
+    const now = R.decode(R.SYSTEM_PARAMS, await link.request(R.SYSTEM, R.SYSTEM_SIZE));
+    out('system', `Input ${show(R.SYS.input, now.input)}, Direct Sound ${show(R.SYS.direct, now.direct)}`);
+  },
+
+  async rxoff() {
+    needSys();
+    if (!confirm('This sets the pedal\'s MIDI Rx Ch to OFF for a moment, then sets it back. Go ahead?')) return;
+    const at = R.offset(R.SYSTEM, R.SYS.rx_ch.off), mine = state.sys.rx_ch;
+    link.send(R.dt1(at, [0]));
+    await sleep(200);
+    let answered = false, stuck = null;
+    try { stuck = R.decode(R.SYSTEM_PARAMS, await link.request(R.SYSTEM, R.SYSTEM_SIZE)).rx_ch; answered = true; } catch (e) { /* the answer is the finding */ }
+    link.send(R.dt1(at, [mine]));
+    await sleep(200);
+    let back = null;
+    try { back = R.decode(R.SYSTEM_PARAMS, await link.request(R.SYSTEM, R.SYSTEM_SIZE)).rx_ch; } catch (e) { /* reported below */ }
+    const line = `${answered ? `the pedal answered RQ1 with Rx Ch reading ${show(R.SYS.rx_ch, stuck)}` : 'no answer to RQ1 while OFF'}; `
+      + (back === mine ? `Rx Ch is back on ${show(R.SYS.rx_ch, mine)}` : back === null ? 'no answer after setting it back: set the channel from the power-on menu' : `Rx Ch now reads ${show(R.SYS.rx_ch, back)}, wanted ${show(R.SYS.rx_ch, mine)}`);
+    note('rxoff', line);
+    out('rxoff', line);
+  },
+};
+
+// one-byte writes to the memory
+const modes = $('modes');
+R.HEADS.forEach((heads, i) => {
+  const b = document.createElement('button');
+  b.textContent = `Mode ${i + 1}`; b.title = `heads ${heads.join(' + ')}`; b.dataset.send = `mode:${i}`;
+  modes.append(b);
+});
+R.REVERB_TYPES.forEach((name, i) => {
+  const b = document.createElement('button');
+  b.textContent = name; b.dataset.send = `reverb_type:${i}`;
+  $('types').append(b);
+});
+
+function guard(id, fn) {
+  try { const r = fn(); if (r && r.catch) return r.catch(e => out(id, e.message)); }
+  catch (e) { out(id, e.message); }
+}
+document.body.addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  const d = b.dataset;
+  if (d.run) {
+    const id = { readback: 'live', restore: 'system' }[d.run] || d.run;
+    b.disabled = true;
+    Promise.resolve(guard(id, checks[d.run])).finally(() => { b.disabled = false; });
+  } else if (d.send) {
+    const [key, v] = d.send.split(':'), p = R.MEM[key];
+    guard('live', () => {
+      const msg = R.dt1(R.offset(target(), p.off), [Number(v)]);
+      link.send(msg);
+      out('live', `sent ${p.label} ${show(p, Number(v))} to ${hex(target())}\n${hex(msg)}`);
+      note('wrote', `${p.label} ${show(p, Number(v))} to ${hex(target())}`, true);
+    });
+  } else if (d.sys) {
+    const [key, v] = d.sys.split(':'), p = R.SYS[key];
+    guard('system', () => {
+      needSys();
+      const msg = R.dt1(R.offset(R.SYSTEM, p.off), [Number(v)]);
+      link.send(msg);
+      out('system', `sent ${p.label} ${show(p, Number(v))}\n${hex(msg)}`);
+      note('sent_sys', `${p.label} ${show(p, Number(v))}`, true);
+    });
+  } else if (d.cc) {
+    const [n, v] = d.cc.split(':').map(Number);
+    guard('cc', () => link.send(R.cc(channel(), n, v)));
+  } else if (d.tap) {
+    const [mode, ms, long] = d.tap.split(':').map(Number);
+    guard('tap', () => {
+      state.tap = { ...R.defaultMemory(), mode, tap_sw: 1, tap_time: ms, time_mode: long || 0, intensity: 0, echo_vol: 110, reverb_vol: 0 };
+      link.send(R.dt1(R.CURRENT, R.encode(R.MEMORY, state.tap, R.MEMORY_SIZE)));
+      link.send([...R.cc(channel(), 18, 0), ...R.cc(channel(), 19, 110), ...R.cc(channel(), 22, 0)]);
+      link.send(R.tapCcs(channel(), ms, long || 0));
+      const line = `Mode ${mode + 1}, tap ${ms} ms${long ? ', LONG' : ''}: heads ${R.HEADS[mode].join(', ')} expected at ${R.HEADS[mode].map(h => h * ms).join(', ')} ms`;
+      out('tap', line); note('tap_loaded', line, true);
+    });
+  } else if (d.tapStore) {
+    guard('tap', async () => {
+      if (!state.tap) throw new Error('load one of the sounds above first');
+      link.send(R.dt1(R.slotAddress(127), R.encode(R.MEMORY, state.tap, R.MEMORY_SIZE)));
+      await sleep(200);
+      link.send(R.program(channel(), 0)); await sleep(300); link.send(R.program(channel(), 127)); await sleep(300);
+      const now = R.decode(R.MEMORY, await link.request(R.CURRENT, R.MEMORY_SIZE));
+      const line = `memory 127 recalled: Mode ${now.mode + 1}, tap ${now.tap_sw ? 'on' : 'off'}, ${now.tap_time} ms, ${show(R.MEM.time_mode, now.time_mode)}`;
+      out('tap', line); note('tap_recalled', line, true);
+    });
+  } else if (d.osc) {
+    const [mode, tape] = d.osc.split(':').map(Number);
+    guard('osc', () => {
+      state.osc = { mode, tape, intensity: 64 };
+      link.send(R.dt1(R.CURRENT, R.encode(R.MEMORY, { ...R.defaultMemory(), mode, tape, tap_sw: 1, tap_time: 150, echo_vol: 90, reverb_vol: 0 }, R.MEMORY_SIZE)));
+      link.send([...R.cc(channel(), 18, 64), ...R.cc(channel(), 19, 90), ...R.cc(channel(), 22, 0)]);
+      link.send(R.tapCcs(channel(), 150, 0));
+      $('int').textContent = 64;
+      out('osc', `Mode ${mode + 1}, ${tape ? 'AGED' : 'NEW'}, head 1 at 150 ms, Intensity 64`);
+    });
+  } else if (d.int) {
+    guard('osc', () => {
+      if (!state.osc) throw new Error('pick a mode and tape first');
+      state.osc.intensity = Math.max(0, Math.min(127, state.osc.intensity + Number(d.int)));
+      link.send(R.cc(channel(), 18, state.osc.intensity));
+      $('int').textContent = state.osc.intensity;
+    });
+  } else if (d.oscSay) {
+    guard('osc', () => {
+      if (!state.osc) throw new Error('pick a mode and tape first');
+      const line = `Mode ${state.osc.mode + 1} ${state.osc.tape ? 'AGED' : 'NEW'}: runs away at Intensity ${state.osc.intensity}`;
+      note('oscillation', line, true); out('osc', line);
+    });
+  } else if (d.say) {
+    const [key, answer] = d.say.split(':');
+    const where = key === 'live' ? ` (writing to ${hex(target())})` : '';
+    note({ live: 'live', system: 'system_live', cc: 'cc' }[key] || key, answer + where, key === 'live');
+    b.parentElement.querySelectorAll('button').forEach(x => x.classList.toggle('said', x === b));
+  }
+});
+
+$('copy').onclick = async () => {
+  try { await navigator.clipboard.writeText($('results').value); $('copy').textContent = 'Copied'; }
+  catch (e) { $('results').select(); document.execCommand('copy'); $('copy').textContent = 'Copied'; }
+  setTimeout(() => { $('copy').textContent = 'Copy results'; }, 1500);
+};
+
+fill();
+$('out').value = demo.output.id; $('in').value = demo.input.id;
+pick();
+</script>
+</body>
+</html>

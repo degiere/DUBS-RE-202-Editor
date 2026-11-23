@@ -1,0 +1,196 @@
+<!doctype html>
+<!-- Copyright (c) 2026, Chris De Giere <https://chrisdegiere.com>
+     Licensed under CC BY-NC-SA 4.0. See LICENSE. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DUBS · RE-202 editor</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="app">
+<div class="main">
+
+  <div class="pedal" id="pedal">
+    <div class="plate">
+      <i class="screw tl"></i><i class="screw tr"></i><i class="screw bl"></i><i class="screw br"></i>
+      <div class="nameplate"><svg class="brand" viewBox="-36 0 156.2 30" role="img" aria-label="DUBS">
+        <g fill="none" stroke="#131313" stroke-width="2.5">
+          <rect x="-34.75" y="1.25" width="27.5" height="27.5" rx="3"/>
+          <circle cx="-21" cy="18.5" r="6.5"/>
+        </g>
+        <g fill="#131313">
+          <rect x="-28" y="5" width="14" height="3.6" rx="1.8"/>
+          <circle cx="-21" cy="18.5" r="2.3"/>
+        </g>
+        <g fill="#131313" fill-rule="evenodd" transform="scale(.7855 1)">
+          <path d="M0,0 H26 a10,10 0 0 1 10,10 V20 a10,10 0 0 1 -10,10 H0 Z M10,8 H24 a2,2 0 0 1 2,2 V20 a2,2 0 0 1 -2,2 H10 Z"/>
+          <path transform="translate(39)" d="M0,0 H10 V22 H26 V0 H36 V20 a10,10 0 0 1 -10,10 H10 a10,10 0 0 1 -10,-10 Z"/>
+          <path transform="translate(78)" d="M0,0 H10 V22 H26 V19 H12.5 V11 H26 V8 H12.5 V0 H28 q8,0 8,7 q0,6 -4,8 q4,2 4,8 q0,7 -8,7 H0 Z"/>
+          <path transform="translate(117)" d="M8,0 H36 V10.5 H30 V8 H10 V11 H28 a8,8 0 0 1 8,8 V22 a8,8 0 0 1 -8,8 H0 V19.5 H6 V22 H26 V19 H8 a8,8 0 0 1 -8,-8 V8 a8,8 0 0 1 8,-8 Z"/>
+        </g>
+      </svg><svg class="model" viewBox="210.6 0 353.4 20" role="img" aria-label="RE-202 PEDAL EDITOR"><g fill="none" stroke="#131313" stroke-width="4.6" stroke-miterlimit="3">
+          <path transform="translate(210.6)" d="M2.3,20 V2.3 H13.85 a3.85,3.85 0 0 1 0,7.7 H2.3 M10.5,10 L17,20"/>
+          <path transform="translate(232)" d="M18,2.3 H2.3 V17.7 H18 M2.3,10 H16"/>
+          <path transform="translate(253.4)" d="M1.5,10 H7.5"/>
+          <path transform="translate(263)" d="M2.3,5.3 V4.8 a2.5,2.5 0 0 1 2.5,-2.5 H13.85 a3.85,3.85 0 0 1 0,7.7 H6.15 a3.85,3.85 0 0 0 -3.85,3.85 V17.7 H18"/>
+          <path transform="translate(284.4)" d="M6.15,2.3 H13.85 a3.85,3.85 0 0 1 3.85,3.85 V13.85 a3.85,3.85 0 0 1 -3.85,3.85 H6.15 a3.85,3.85 0 0 1 -3.85,-3.85 V6.15 a3.85,3.85 0 0 1 3.85,-3.85 Z"/>
+          <path transform="translate(305.8)" d="M2.3,5.3 V4.8 a2.5,2.5 0 0 1 2.5,-2.5 H13.85 a3.85,3.85 0 0 1 0,7.7 H6.15 a3.85,3.85 0 0 0 -3.85,3.85 V17.7 H18"/>
+          <path transform="translate(336.2)" d="M2.3,20 V2.3 H13.85 a3.85,3.85 0 0 1 0,7.7 H2.3"/>
+          <path transform="translate(357.6)" d="M18,2.3 H2.3 V17.7 H18 M2.3,10 H16"/>
+          <path transform="translate(379)" d="M2.3,2.3 H13.85 a3.85,3.85 0 0 1 3.85,3.85 V13.85 a3.85,3.85 0 0 1 -3.85,3.85 H2.3 Z"/>
+          <path transform="translate(400.4)" d="M2.2,20 L8.4,2.3 H11.6 L17.8,20 M5.2,13.6 H14.8"/>
+          <path transform="translate(421.8)" d="M2.3,0 V17.7 H18"/>
+          <path transform="translate(452.2)" d="M18,2.3 H2.3 V17.7 H18 M2.3,10 H16"/>
+          <path transform="translate(473.6)" d="M2.3,2.3 H13.85 a3.85,3.85 0 0 1 3.85,3.85 V13.85 a3.85,3.85 0 0 1 -3.85,3.85 H2.3 Z"/>
+          <path transform="translate(495)" d="M2.3,0 V20"/>
+          <path transform="translate(501.2)" d="M0.5,2.3 H19.5 M10,2.3 V20"/>
+          <path transform="translate(522.6)" d="M6.15,2.3 H13.85 a3.85,3.85 0 0 1 3.85,3.85 V13.85 a3.85,3.85 0 0 1 -3.85,3.85 H6.15 a3.85,3.85 0 0 1 -3.85,-3.85 V6.15 a3.85,3.85 0 0 1 3.85,-3.85 Z"/>
+          <path transform="translate(544)" d="M2.3,20 V2.3 H13.85 a3.85,3.85 0 0 1 0,7.7 H2.3 M10.5,10 L17,20"/>
+        </g></svg></div>
+      <div class="field">
+
+        <section class="left">
+          <div class="strip" id="memrow">
+            <div class="cell"><span>MANUAL</span><i class="lamp green" data-slot="0"></i></div>
+            <div class="cell"><span>1</span><i class="lamp" data-slot="1"></i></div>
+            <div class="cell"><span>2</span><i class="lamp" data-slot="2"></i></div>
+            <div class="cell"><span>3</span><i class="lamp" data-slot="3"></i></div>
+            <div class="cell"><span>4</span><i class="lamp" data-slot="4"></i></div>
+            <div class="cell wide"><span>MEMORY</span><button class="key" id="memory" title="Next memory: MANUAL, 1 to 4"></button></div>
+          </div>
+          <div class="strip split">
+            <div class="cell"><span>GUITAR</span><i class="lamp red" id="in-guitar"></i></div>
+            <div class="cell"><span>LINE</span><i class="lamp red" id="in-line"></i></div>
+            <div class="cell wide"><span>INPUT</span><button class="key" id="input" title="GUITAR / LINE"></button></div>
+            <div class="rule"></div>
+            <div class="cell"><span>NEW</span><i class="lamp red" id="tape-new"></i></div>
+            <div class="cell"><span>AGED</span><i class="lamp red" id="tape-aged"></i></div>
+            <div class="cell wide"><span>TAPE</span><button class="key" id="tape" title="NEW / AGED tape"></button></div>
+          </div>
+          <div class="pair">
+            <div class="k" data-knob="saturation">SATURATION</div>
+            <div class="vr"></div>
+            <div class="k" data-knob="wow_flutter">WOW &amp; FLUTTER</div>
+          </div>
+        </section>
+
+        <section class="green mode">
+          <h2>MODE SELECTOR</h2>
+          <div class="headlabel"><s></s>HEAD<s></s></div>
+          <div class="heads" id="heads">
+            <div class="cell"><span>1</span><i class="lamp red"></i></div>
+            <div class="cell"><span>2</span><i class="lamp red"></i></div>
+            <div class="cell"><span>3</span><i class="lamp red"></i></div>
+            <div class="cell"><span>4</span><i class="lamp red"></i></div>
+          </div>
+          <div class="ring" id="ring"></div>
+        </section>
+
+        <section class="green right">
+          <div class="tonebar">
+            <div class="k" data-knob="bass">BASS</div>
+            <div class="k" data-knob="treble">TREBLE</div>
+            <div class="k" data-knob="reverb_vol">REVERB VOL</div>
+          </div>
+          <div class="row">
+            <div class="k" data-knob="repeat_rate">REPEAT RATE</div>
+            <div class="k" data-knob="intensity">INTENSITY</div>
+            <div class="k" data-knob="echo_vol">ECHO VOL</div>
+          </div>
+          <div class="headlabel rev"><s></s>REVERB<s></s></div>
+          <div class="types" id="types"></div>
+        </section>
+
+      </div>
+    </div>
+
+    <div class="deck">
+      <div class="foot" data-foot="effect"><i class="bar-lamp" id="lamp-effect"></i><div class="disc"><b>ON/OFF</b><button title="Click: effect on / off. Hold: Warp"></button><b>WARP<small>(HOLD)</small></b></div></div>
+      <div class="foot" data-foot="memory"><i class="bar-lamp" id="lamp-memory"></i><div class="disc"><b>MEMORY</b><button title="Click: next memory. Hold: reverb on / off"></button><b>REVERB<small>(HOLD)</small></b></div></div>
+      <div class="foot" data-foot="tap"><i class="bar-lamp" id="lamp-tap"></i><div class="disc"><b>TAP</b><button title="Click: tap the tempo. Hold: Twist"></button><b>TWIST<small>(HOLD)</small></b></div></div>
+    </div>
+  </div>
+
+  <div class="console">
+    <div class="pick">
+      <button id="prev" title="Previous preset">&#9664;</button>
+      <input id="name" placeholder="Preset name" spellcheck="false" autocomplete="off">
+      <button id="browse" title="All presets">&#9662;</button>
+      <button id="next" title="Next preset">&#9654;</button>
+    </div>
+    <div id="plist" hidden></div>
+    <div class="acts">
+      <button id="save">Save</button>
+      <button id="new">New</button>
+      <button id="delete">Delete</button>
+      <span class="badge" id="badge">not read</span>
+    </div>
+    <div class="lcd" id="lcd"></div>
+    <div class="time">
+      <label class="over"><span>BPM</span><input id="bpm" type="number" min="20" max="300" step="0.1" value="120"></label>
+      <select id="note"></select>
+      <button id="settempo" title="Set the delay time from this tempo">Set time</button>
+      <button id="tapsw" title="Use the tap time, or the REPEAT RATE knob"></button>
+      <button id="timemode" title="Normal: up to 1 second. Long: up to 2 seconds"></button>
+      <button class="find clear" id="find" title="Ask each MIDI port for an RE-202 and connect to the one that answers">Find my pedal</button>
+    </div>
+  </div>
+  <p class="unofficial">Unofficial. Not affiliated with or endorsed by Boss or Roland.</p>
+
+</div>
+
+  <div class="drawer">
+    <nav id="tabs">
+      <button data-tab="memories" class="on">Memories</button>
+      <button data-tab="settings">Settings</button>
+      <button data-tab="midi">MIDI</button>
+      <span class="grow"></span>
+      <span id="status"></span>
+    </nav>
+
+    <div class="tab on" id="tab-memories">
+      <div class="tools"><button id="readall">Read all memories</button><button id="loadbank" title="Write the presets to memories 1 to 100">Load bank</button><span class="hint">Recall plays a memory, Write here stores the sound on screen, Read shows its settings.</span></div>
+      <div class="scroll"><table id="memtable"><tbody></tbody></table></div>
+    </div>
+
+    <div class="tab" id="tab-settings">
+      <p class="hint" id="settings-note"></p>
+      <div class="grid" id="sysgrid"></div>
+      <h3>Expression pedal range</h3>
+      <div class="grid exp" id="expgrid"></div>
+    </div>
+
+    <div class="tab" id="tab-midi">
+      <div class="tools">
+        <label>To pedal <select id="out"></select></label>
+        <label>From pedal <select id="in"></select></label>
+        <label>Channel <select id="channel"></select></label>
+        <button class="find" title="Ask each MIDI port for an RE-202 and connect to the one that answers">Find my pedal</button>
+        <button id="connect">Connect and read</button>
+      </div>
+      <div class="tools">
+        <button id="backup">Back up all</button>
+        <button id="restore">Restore from file</button>
+        <label><input type="checkbox" id="restore-system"> also restore system settings</label>
+        <input type="file" id="restore-file" accept=".syx" hidden>
+      </div>
+      <div class="tools">
+        <button id="folder">Choose library folder</button>
+        <span class="hint" id="folder-note"></span>
+      </div>
+      <div class="tools"><span class="hint">MIDI messages: &gt; sent, &lt; received</span><span class="grow"></span><button id="clearlog">Clear</button></div>
+      <pre id="log"></pre>
+    </div>
+  </div>
+</div>
+
+<script src="re202.js"></script>
+<script src="bank.js"></script>
+<script src="fake.js"></script>
+<script src="midi.js"></script>
+<script src="editor.js"></script>
+<script src="library.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
