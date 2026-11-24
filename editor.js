@@ -20,6 +20,7 @@
       this.reads = false;               // the pedal answers, so reading and backup work
       this.known = false;               // the screen shows what the pedal is playing
       this.slot = null;                 // the memory recalled: 0 MANUAL, 1..127, null when not known
+      this.edited = false;              // the sound has changed since it was read from the pedal or written to its memory
       this.effect = true;
       this.held = { twist: false, warp: false };
       this.onChange = null;             // (what) after anything on the screen should redraw
@@ -61,6 +62,7 @@
       this.memLen = data.length;
       this.mem = { ...R.defaultMemory(), ...R.decode(R.MEMORY, data) };
       this.known = true;
+      this.edited = false;
       this.changed('memory');
     }
     async readSlot(slot) { return R.decode(R.MEMORY, await this.link.request(R.slotAddress(slot), R.MEMORY_SIZE)); }
@@ -72,6 +74,7 @@
       if (!p) throw new Error(`no parameter called ${key}`);
       const v = p.width === 4 ? Math.max(0, Math.min(p.hi, Math.round(value))) : R.clamp(p, value);
       this.mem[key] = v;
+      this.edited = true;
       this.touched = Date.now();
       if (p.cc) { this.sentAt[p.cc] = Date.now(); this.link.send(R.cc(this.channel, p.cc, v)); }
       else if (this.has(key)) this.link.send(R.dt1(R.offset(R.CURRENT, p.off), R.paramBytes(p, v)));
@@ -83,6 +86,7 @@
       const mem = R.defaultMemory();
       for (const p of R.MEMORY) if (values[p.key] !== undefined) mem[p.key] = p.width === 4 ? Math.max(0, Math.min(p.hi, Math.round(values[p.key]))) : R.clamp(p, values[p.key]);
       this.mem = mem;
+      this.edited = true;
       this.touched = Date.now();
       this.link.send(R.dt1(R.CURRENT, R.encode(R.MEMORY, mem, R.MEMORY_SIZE).slice(0, this.memLen)));
       for (const [key, , cc] of R.KNOBS) { this.sentAt[cc] = Date.now(); this.link.send(R.cc(this.channel, cc, mem[key])); }
@@ -150,6 +154,7 @@
       if (!Number.isInteger(slot) || slot < 1 || slot > 127) throw new Error('a memory to write is 1 to 127');
       if (!this.known) throw new Error('the screen does not show what the pedal is playing: read the pedal or load a preset first');
       this.link.send(R.dt1(R.slotAddress(slot), R.encode(R.MEMORY, this.mem, R.MEMORY_SIZE).slice(0, this.memLen)));
+      if (slot === this.slot) { this.edited = false; this.changed('memory'); }
     }
 
     // ---- system settings
@@ -212,7 +217,7 @@
     heardCC(ch, n, v) {
       if (ch !== this.txChannel || Date.now() - (this.sentAt[n] || 0) < this.echo) return;
       const p = R.MEMORY.find(q => q.cc === n);
-      if (p) { this.mem[p.key] = v; this.changed('memory'); }
+      if (p) { this.mem[p.key] = v; this.edited = true; this.changed('memory'); }
       else if (n === R.CC.effect) { this.effect = v >= 64; this.changed('switch'); }
     }
     heardPC(ch, slot) {
@@ -247,7 +252,7 @@
         if (p.cc || p.group === 'exp' || got[p.key] === undefined || got[p.key] === this.mem[p.key]) continue;
         this.mem[p.key] = got[p.key]; moved = true;
       }
-      if (moved) this.changed('memory');
+      if (moved) { this.edited = true; this.changed('memory'); }
       return moved;
     }
   }

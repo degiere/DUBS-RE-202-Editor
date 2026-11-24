@@ -159,11 +159,24 @@ assert.deepEqual(ed.mem, mine);
 assert.deepEqual(await ed.readSlot(9), mine);
 assert.throws(() => ed.write(0));
 
+// the sound is marked edited from a change until its memory is recalled or written over
+assert.equal(ed.edited, false);
+ed.set('bass', 77);
+assert.equal(ed.edited, true);
+ed.write(8);
+assert.equal(ed.edited, true);
+ed.write(9);
+assert.equal(ed.edited, false);
+ed.set('bass', mine.bass);
+await ed.recall(9);
+assert.equal(ed.edited, false);
+
 // a preset loads as one block plus the knobs
 ed.load({ ...R.defaultMemory(), mode: 10, saturation: 5, tape: 1 });
 assert.equal(cur().mode, 10);
 assert.equal(cur().saturation, 5);
 assert.equal(cur().tape, 1);
+assert.equal(ed.edited, true);
 
 // the reverb type is the system's until the pedal keeps one per memory
 ed.setReverbType(2);

@@ -39,6 +39,8 @@ button:disabled, select:disabled, input:disabled { opacity: .4; cursor: default;
 @container (max-width: 830px) { .console { grid-template-columns: minmax(0, 1fr); } .console > div[class] { grid-area: auto; } }
 .badge { margin-left: 4px; text-align: center; padding: 3px 10px; border-radius: 10px; background: var(--green); color: #dff3e8; font-weight: 600; letter-spacing: .04em; }
 .badge.off { background: #4a3a1c; color: #f3d9a4; }
+/* the star is drawn, not typed: a box as tall as the capitals standing on the baseline, so it centres on them in any font */
+.badge.edited::after { content: ''; display: inline-block; width: .72em; height: .72em; margin-left: .4em; vertical-align: baseline; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 1v10M1.67 3.5l8.66 5M1.67 8.5l8.66-5' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M6 1v10M1.67 3.5l8.66 5M1.67 8.5l8.66-5' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat; }
 
 /* ---- the pedal */
 .pedal { width: 1000px; margin: 0 auto; background: linear-gradient(#222325, #151617); border-radius: 26px 26px 34px 34px; padding: 16px 26px 0; box-shadow: 0 18px 40px rgba(0,0,0,.7), inset 0 1px 0 #3a3b3e; user-select: none; }

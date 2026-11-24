@@ -493,6 +493,9 @@ function render() {
   if (ed.slot !== state.shownSlot) { state.shownSlot = ed.slot; if (ed.slot !== null && document.activeElement !== $('name')) { $('name').value = names()[ed.slot] || ''; showTempo(state.presets.find(p => p.fromBank && p.name === $('name').value)); } }
   $('badge').textContent = !link.output || onBuiltIn() ? 'NO PEDAL' : ed.known ? where || 'CONNECTED' : 'NOT SYNCED';
   $('badge').classList.toggle('off', !link.output || onBuiltIn() || !ed.known);
+  // the memory's name greys and takes a star while the sound is no longer what that memory holds, until it is recalled or written
+  const edited = ed.edited && ed.known && ed.slot !== null && !!link.output && !onBuiltIn();
+  $('badge').classList.toggle('edited', edited);
   $('badge').title = !link.output || onBuiltIn() ? 'No pedal connected' : ed.known ? '' : 'The screen may not match the pedal: it has not answered. Cable its MIDI OUT back to read it';
   // with no pedal connected the status line says so, and Find my pedal shows at the right of the time row
   warned = !link.output || onBuiltIn();
