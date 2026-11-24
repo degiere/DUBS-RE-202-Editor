@@ -72,7 +72,7 @@ Pick a folder on the MIDI tab for your presets, backups and memory names; later 
 
 ## Presets
 
-DUBS comes with 96 presets: 12 families of 8. They are a homage to the Roland Space Echo, built around the music it is on record as being used for.
+DUBS comes with 96 presets in 12 families of 8: a homage to the Roland Space Echo and the music made with it.
 
 The first six families are for a **line** input: synthesizers, drum machines and the send of a mixing desk. The other six are for **guitar**. Set Input to LINE or GUITAR on the Settings tab. Leave Direct Sound on, so each preset's Echo Vol and Reverb Vol set the mix against the dry signal; on a mixer's send, turn it off so only the echo returns.
 
