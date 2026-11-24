@@ -102,9 +102,7 @@ The original RE-201 of 1974 had three heads, a spring reverb and a head 1 delay 
 
 The expression pedal sweeps Echo Vol from nothing up to the preset's level, like a dub send.
 
-The presets that come with DUBS cannot be deleted or saved over; change one and save it under your own name.
-
-**Load presets**, on the Memories tab, writes the 96 to memories 5 to 100 and names them, with four spring echoes on memories 1 to 4 for the pedal's MEMORY switch. It needs the cable back from the pedal and asks first. The pedal's own MEMORY button stops at 4; memories 5 and up are recalled from the Memories tab or by program change.
+**Load presets**, on the Memories tab, puts all 96 on the pedal in memories 5 to 100, with four spring echoes in 1 to 4. The pedal's MEMORY button only reaches 1 to 4; recall the rest from the Memories tab or by program change.
 
 ## System version
 
@@ -122,6 +120,6 @@ DUBS is an independent project, not affiliated with or endorsed by Boss or Rolan
 
 ## About
 
-This project is made with love. Homage to the makers. Hardware and software and music. Please support the makers. --Chris
+This project is made with love. Homage to the makers of hardware and software and music. Please support the makers. --Chris
 
 https://chrisdegiere.com
