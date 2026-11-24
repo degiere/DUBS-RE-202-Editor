@@ -188,7 +188,8 @@ h3 { margin: 16px 0 8px; font-size: 13px; color: #9a9ca0; text-transform: upperc
 
 /* a wide window: the drawer moves beside the pedal */
 @media (min-width: 1150px) {
-  .app { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(460px, 1fr); gap: 16px; align-items: start; }
+  /* --mainw is set by fit() when the pedal's column has to be narrower for all of it to show in the window's height */
+  .app { display: grid; grid-template-columns: minmax(0, var(--mainw, 1.3fr)) minmax(460px, 1fr); gap: 16px; align-items: start; }
   /* the page has the only scroll bar: the list runs its full height and the pedal stays in view beside it */
   /* beside the pedal, the drawer is at least as tall as the pedal's column, and the MIDI log fills what is left of it */
   .drawer { margin-top: 0; align-self: stretch; display: flex; flex-direction: column; }

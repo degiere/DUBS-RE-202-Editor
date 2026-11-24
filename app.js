@@ -508,8 +508,25 @@ function render() {
 }
 ed.onChange = what => { render(); if (what === 'system' || what === 'connect') renderSettings(); };
 
-// the pedal is drawn 1000 px wide and scales to its column; the drawer sits under it in a narrow window and beside it in a wide one
-function fit() { $('pedal').style.zoom = Math.max(0.4, Math.min(1.7, document.querySelector('.main').clientWidth / 1000)); }
+// the pedal is drawn 1000 px wide and scales to its column; the drawer sits under it in a narrow window and beside it in a wide one.
+// Beside the drawer, the column is made narrower when it would otherwise run below the window, so everything under the
+// pedal, down to the last line, shows without scrolling.
+function fit() {
+  const app = document.querySelector('.app'), main = document.querySelector('.main'), pedal = $('pedal');
+  const zoom = () => { pedal.style.zoom = Math.max(0.4, Math.min(1.7, main.clientWidth / 1000)); };
+  app.style.removeProperty('--mainw');
+  zoom();
+  if (!matchMedia('(min-width: 1150px)').matches) return;
+  for (let pass = 0; pass < 2; pass++) {       // twice: the rows under the pedal can restack as the column narrows
+    const drawn = pedal.getBoundingClientRect().height, under = main.scrollHeight - drawn;
+    const room = innerHeight - 32 - under;
+    if (main.scrollHeight <= innerHeight - 32 && pass === 0) return;
+    const width = Math.max(560, Math.floor(room * main.clientWidth / drawn));
+    if (width >= main.clientWidth && pass === 0) return;
+    app.style.setProperty('--mainw', `${width}px`);
+    zoom();
+  }
+}
 window.addEventListener('resize', fit);
 fit();
 
