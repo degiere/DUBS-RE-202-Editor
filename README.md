@@ -77,7 +77,7 @@ In half a screen everything stacks, pedal first:
 
 Recalling a memory lights its number in the list and puts its name in the preset bar.
 
-The first Write or Restore of a visit backs up the whole pedal first. With no cable back from the pedal the editor sends only: edits, presets and recalls work, the screen dims after a recall because it cannot see what the pedal loaded, and reading, backup and the Settings tab wait for the cable.
+Back up all, on the MIDI tab, saves every memory and the system settings to one file. With no cable back from the pedal the editor sends only: edits, presets and recalls work, the screen dims after a recall because it cannot see what the pedal loaded, and reading, backup and the Settings tab wait for the cable.
 
 
 ## Library
@@ -119,7 +119,7 @@ The expression pedal sweeps Echo Vol from nothing up to the preset's level, like
 
 The presets that come with DUBS cannot be deleted or saved over; change one and save it under your own name.
 
-**Load bank**, on the Memories tab, writes the 96 to memories 5 to 100 and names them, with four spring echoes on memories 1 to 4 for the pedal's MEMORY switch. It needs the cable back from the pedal, asks first and backs the pedal up. The pedal's own MEMORY button stops at 4; memories 5 and up are recalled from the Memories tab or by program change.
+**Load bank**, on the Memories tab, writes the 96 to memories 5 to 100 and names them, with four spring echoes on memories 1 to 4 for the pedal's MEMORY switch. It needs the cable back from the pedal and asks first. The pedal's own MEMORY button stops at 4; memories 5 and up are recalled from the Memories tab or by program change.
 
 ## System version
 

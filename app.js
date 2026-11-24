@@ -15,7 +15,7 @@ builtIn.write(R.offset(R.SYSTEM, R.SYS.reverb_pref.off), [1]);
 const onBuiltIn = () => link.output === builtIn.output;
 const names = () => onBuiltIn() ? builtInNames : state.names;
 const saveNames = () => onBuiltIn() ? Promise.resolve() : lib.saveNames(state.names);
-const state = { access: null, presets: [], names: {}, sums: {}, backedUp: false, input: 1, log: [] };
+const state = { access: null, presets: [], names: {}, sums: {}, input: 1, log: [] };
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, Math.round(v)));
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -129,22 +129,12 @@ function nextMemory() {
   const extent = ed.sys && ed.sys.memory_extent ? ed.sys.memory_extent : 4;
   return ed.recall(ed.slot === null || ed.slot >= extent ? 0 : ed.slot + 1);
 }
-// take a backup before the first write or restore of a visit, when the pedal can be read
-async function ensureBackup() {
-  if (!ed.reads || state.backedUp) return;
-  toast('Backing up the pedal first…');
-  const bytes = await ed.backup((n, of) => toast(`Backing up the pedal first: ${n} of ${of}`));
-  const where = await lib.saveBackup(`${stamp()} before writing`, bytes);
-  state.backedUp = true;
-  toast(`Backup saved: ${where}`);
-}
 async function writeHere(slot) {
   if (!slot) {
     const v = prompt('Write this sound to which memory? (1 to 127)');
     if (v === null) return;
     slot = Number(v);
   }
-  await ensureBackup();
   ed.write(slot);
   state.sums[slot] = summary(ed.mem);
   // the memory takes the name in the preset bar along with the sound
@@ -306,8 +296,7 @@ $('readall').addEventListener('click', run(async () => {
 $('loadbank').addEventListener('click', run(async () => {
   const last = Bank.FIRST_SLOT + 95;
   const entries = bankEntries().filter(e => !(e.needsType && !ed.has('reverb_type')));
-  if (!confirm(`Load the presets? This replaces memories 1 to ${last} on the pedal and their names: four spring echoes on 1 to 4 for the MEMORY switch, the 96 presets on ${Bank.FIRST_SLOT} to ${last}. It also sets the pedal to keep a reverb type for each memory and to take a tap time as head 1's. The pedal is backed up first.`)) return;
-  await ensureBackup();
+  if (!confirm(`Load the presets? This replaces memories 1 to ${last} on the pedal and their names: four spring echoes on 1 to 4 for the MEMORY switch, the 96 presets on ${Bank.FIRST_SLOT} to ${last}. It also sets the pedal to keep a reverb type for each memory and to take a tap time as head 1's.`)) return;
   if (!onBuiltIn()) await lib.keepNames(state.names);
   await ed.loadBank(entries, (n, of) => { if (n % 8 === 0 || n === of) toast(`Loading the bank: ${n} of ${of}`); });
   for (let s = 1; s <= last; s++) { delete names()[s]; delete state.sums[s]; }
@@ -428,7 +417,6 @@ for (const b of document.querySelectorAll('.find')) b.addEventListener('click', 
 $('backup').addEventListener('click', run(async () => {
   if (!ed.reads) throw new Error('A backup needs the pedal\'s MIDI OUT cabled back to the computer');
   const bytes = await ed.backup((n, of) => toast(`Backing up: ${n} of ${of}`));
-  state.backedUp = true;
   toast(`Backup saved: ${await lib.saveBackup(stamp(), bytes)}`);
 }));
 $('restore').addEventListener('click', () => $('restore-file').click());
@@ -439,7 +427,6 @@ $('restore-file').addEventListener('change', run(async () => {
   const system = $('restore-system').checked;
   if (!confirm(`Send "${file.name}" to the pedal? This replaces its memories${system ? ' and its system settings' : ''}.`)) return;
   const bytes = new Uint8Array(await file.arrayBuffer());
-  await ensureBackup();
   const count = await ed.restore(bytes, { system }, (n, of) => toast(`Restoring: ${n} of ${of}`));
   toast(`Restored ${count} blocks from ${file.name}`);
   if (ed.reads) { if (system) await ed.readSystem(); await ed.recall(ed.slot || 0); }
