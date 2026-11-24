@@ -1,8 +1,8 @@
-# DUBS: an editor for the Boss RE-202
+# DUBS: an editor for the Boss RE-202 Space Echo
 
-**DUBS** is a Chrome-based editor for the Boss Space Echo RE-202. It unlocks the pedal's hidden parameters and makes it easy to organize a large preset library.
+**DUBS** is a Chrome-based editor for the Boss RE-202 Space Echo. It unlocks the pedal's hidden parameters and makes it easy to organize a large preset library.
 
-**Open the editor: https://degiere.github.io/DUBS-RE-202-Editor/**
+**Open the editor: https://degiere.github.io/dubs/**
 
 It is one page of plain JavaScript that runs entirely in your browser and talks to the pedal over Web MIDI. Your pedal's settings, presets and backups stay on your computer; nothing is uploaded or shared.
 
@@ -10,14 +10,14 @@ It is one page of plain JavaScript that runs entirely in your browser and talks 
 
 ## What you need
 
-- A Boss RE-202, on system Ver. 1.10 for the per-memory reverb type (see System version below).
+- A Boss RE-202 Space Echo, on system Ver. 1.10 for the per-memory reverb type (see System version below).
 - Chrome, or another Chromium browser.
 - A MIDI interface with 5-pin MIDI OUT and MIDI IN.
 - Two TRS **Type A** MIDI cables (see Wiring below).
 
 ## Running it
 
-**Web editor.** Open https://degiere.github.io/DUBS-RE-202-Editor/ in Chrome, allow MIDI when it asks, and press Find my pedal.
+**Web editor.** Open https://degiere.github.io/dubs/ in Chrome, allow MIDI when it asks, and press Find my pedal.
 
 **Your own copy.** Download this folder and start its small server, which needs [Node.js](https://nodejs.org):
 
@@ -113,6 +113,6 @@ DUBS is an independent project, not affiliated with or endorsed by Boss or Rolan
 
 ## About
 
-This project is made with love. Homage to the makers of hardware, software, and music. Please support the makers. --Chris
+This project is made with love. An homage to the makers of hardware, software, and music. Please support the makers. --Chris
 
 https://chrisdegiere.com
