@@ -267,7 +267,7 @@ function renderMemories() {
     tr.querySelector('[data-act=read]').disabled = !ed.reads;
   }
   $('readall').disabled = !ed.reads; $('loadbank').disabled = !ed.reads;
-  // a real pedal with no memory named here yet: Load bank glows as the place to start
+  // a real pedal with no memory named here yet: Load presets glows as the place to start
   $('loadbank').classList.toggle('start', ed.reads && !onBuiltIn() && !Object.keys(state.names).length);
 }
 let namesTimer = null;
@@ -298,7 +298,7 @@ $('loadbank').addEventListener('click', run(async () => {
   const entries = bankEntries().filter(e => !(e.needsType && !ed.has('reverb_type')));
   if (!confirm(`Load the presets? This replaces memories 1 to ${last} on the pedal and their names: four spring echoes on 1 to 4 for the MEMORY switch, the 96 presets on ${Bank.FIRST_SLOT} to ${last}. It also sets the pedal to keep a reverb type for each memory and to take a tap time as head 1's.`)) return;
   if (!onBuiltIn()) await lib.keepNames(state.names);
-  await ed.loadBank(entries, (n, of) => { if (n % 8 === 0 || n === of) toast(`Loading the bank: ${n} of ${of}`); });
+  await ed.loadBank(entries, (n, of) => { if (n % 8 === 0 || n === of) toast(`Loading the presets: ${n} of ${of}`); });
   for (let s = 1; s <= last; s++) { delete names()[s]; delete state.sums[s]; }
   for (const e of entries) { names()[e.slot] = e.name; state.sums[e.slot] = summary(e.values); }
   await saveNames();

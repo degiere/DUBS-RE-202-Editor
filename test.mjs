@@ -319,7 +319,7 @@ const apart = (a, b) => {
 };
 for (let i = 0; i < 96; i++) for (let j = i + 1; j < 96; j++) assert.ok(apart(bank[i].values, bank[j].values) >= 0.3, `${bank[i].name} / ${bank[j].name}`);
 
-// loading the bank: the pedal is set to a reverb type per memory and HEAD1 tap, then each preset lands in its memory
+// loading the presets: the pedal is set to a reverb type per memory and HEAD1 tap, then each preset lands in its memory
 const bp = new FakePedal();
 bp.write(R.offset(R.SYSTEM, R.SYS.tap_setting.off), [3]);
 elink.use(bp.output, bp.input);

@@ -200,7 +200,7 @@
     // write a bank to the pedal's memories: [{ slot, values }]. The pedal is first set to keep a reverb type per memory
     // and to take a tap time as head 1's, the two settings the bank's names are true under.
     async loadBank(entries, onStep) {
-      if (!this.reads) throw new Error('loading the bank needs the pedal to answer: connect its MIDI OUT and read it first');
+      if (!this.reads) throw new Error('loading the presets needs the pedal to answer: connect its MIDI OUT and read it first');
       if ('reverb_pref' in this.sys) this.setSystem('reverb_pref', 1);
       if ('tap_setting' in this.sys) this.setSystem('tap_setting', 0);
       const messages = entries.map(({ slot, values }) => {
