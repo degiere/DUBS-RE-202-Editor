@@ -113,6 +113,6 @@ DUBS is an independent project, not affiliated with or endorsed by Boss or Rolan
 
 ## About
 
-This project is made with love. Homage to the makers of hardware and software and music. Please support the makers. --Chris
+This project is made with love. Homage to the makers of hardware, software, and music. Please support the makers. --Chris
 
 https://chrisdegiere.com
