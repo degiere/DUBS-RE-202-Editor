@@ -147,6 +147,9 @@ async function writeHere(slot) {
   await ensureBackup();
   ed.write(slot);
   state.sums[slot] = summary(ed.mem);
+  // the memory takes the name in the preset bar along with the sound
+  const name = $('name').value.trim();
+  if (name && names()[slot] !== name) { names()[slot] = name; await saveNames(); }
   ed.slot = slot;
   renderMemories(); render();
   toast(`Written to memory ${slot}`);
