@@ -361,7 +361,7 @@ function want(out, input) {
   wanted = { out, in: input };
   try { localStorage.setItem('re202.wanted', JSON.stringify(wanted)); } catch (e) { /* a convenience */ }
 }
-const missing = () => onBuiltIn() && wanted.out && wanted.out !== builtIn.output.name ? wanted.out : '';
+const missing = () => state.access && onBuiltIn() && wanted.out && wanted.out !== builtIn.output.name ? wanted.out : '';
 function fillPorts() {
   for (const [sel, ports, fake, was] of [[$('out'), state.access && state.access.outputs, builtIn.output, wanted.out], [$('in'), state.access && state.access.inputs, builtIn.input, wanted.in]]) {
     sel.length = 0;
@@ -491,13 +491,13 @@ function render() {
   const where = ed.slot === null ? '' : ed.slot === 0 ? 'MANUAL' : `MEMORY ${ed.slot}`;
   // a memory recalled, from the screen or the pedal, shows its own name in the preset box
   if (ed.slot !== state.shownSlot) { state.shownSlot = ed.slot; if (ed.slot !== null && document.activeElement !== $('name')) { $('name').value = names()[ed.slot] || ''; showTempo(state.presets.find(p => p.fromBank && p.name === $('name').value)); } }
-  $('badge').textContent = onBuiltIn() ? 'NO PEDAL' : ed.known ? where || 'pedal' : `${where ? `${where} · ` : ''}not read`;
-  $('badge').classList.toggle('off', onBuiltIn() || !ed.known);
-  $('badge').title = $('badge').textContent;
+  $('badge').textContent = !link.output || onBuiltIn() ? 'NO PEDAL' : ed.known ? where || 'CONNECTED' : 'NOT SYNCED';
+  $('badge').classList.toggle('off', !link.output || onBuiltIn() || !ed.known);
+  $('badge').title = !link.output || onBuiltIn() ? 'No pedal connected' : ed.known ? '' : 'The screen may not match the pedal: it has not answered. Cable its MIDI OUT back to read it';
   // with no pedal connected the status line says so, and Find my pedal shows at the right of the time row
   warned = !link.output || onBuiltIn();
   $('find').classList.toggle('clear', !warned);
-  standing = onBuiltIn() ? `${missing() ? `${missing()} is not connected` : 'No pedal connected'} · nothing is sent to hardware` : link.output ? `${link.output.name} · channel ${ed.channel} · ${ed.reads ? 'reading the pedal' : 'send only'}` : 'no MIDI output'; paintStatus();
+  standing = onBuiltIn() ? `${missing() ? `${missing()} is not connected` : 'No pedal connected'} · nothing is sent to hardware` : link.output ? `${link.output.name} · channel ${ed.channel} · ${ed.reads ? 'reading the pedal' : 'send only'}` : 'No MIDI output picked'; paintStatus();
 
   const heads = ed.heads();
   $('lcd').innerHTML = heads.map(h => `<span class="h${h.n}">H${h.n} <b>${h.ms === null ? `×${h.n}` : `${h.ms} ms`}</b></span>`).join('');
@@ -535,14 +535,16 @@ fit();
 (async function start() {
   buildMemories(); renderSettings(); render();
   await run(() => openLibrary(false))();
-  try {
-    state.access = await navigator.requestMIDIAccess({ sysex: true });
+  // Chrome may hold the page at its MIDI permission prompt: the built-in pedal is on screen meanwhile, and the ports
+  // asked for are taken up once Chrome allows them
+  const moved = () => $('out').value !== (link.output ? link.output.id : '') || $('in').value !== (link.input ? link.input.id : '');
+  const asking = navigator.requestMIDIAccess({ sysex: true }).then(access => {
+    state.access = access;
     // a port plugged in or pulled: redraw the lists, and move to the port asked for when it has just appeared or gone
-    state.access.onstatechange = () => {
-      fillPorts();
-      if ($('out').value !== (link.output ? link.output.id : '') || $('in').value !== (link.input ? link.input.id : '')) run(connect)();
-    };
-  } catch (e) { toast(`Chrome refused MIDI with SysEx (${e.message}). The built-in pedal still works`, true); }
+    access.onstatechange = () => { fillPorts(); if (moved()) run(connect)(); };
+  }, e => toast(`Chrome refused MIDI with SysEx (${e.message}). The built-in pedal still works`, true));
+  await Promise.race([asking, sleep(300)]);
   fillPorts();
   await run(connect)();
+  if (!state.access) asking.then(() => { if (!state.access) return; fillPorts(); if (moved()) run(connect)(); });
 })();
