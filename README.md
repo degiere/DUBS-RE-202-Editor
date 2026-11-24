@@ -1,6 +1,6 @@
-# DUBS: an editor for the Boss RE-202 Space Echo
+# DUBS: an editor for the BOSS RE-202 Space Echo
 
-**DUBS** is a Chrome-based editor for the Boss RE-202 Space Echo. It unlocks the pedal's hidden parameters and makes it easy to organize a large preset library.
+**DUBS** is a Chrome-based editor for the BOSS RE-202 Space Echo. It unlocks the pedal's hidden parameters and makes it easy to organize a large preset library.
 
 **Open the editor: https://degiere.github.io/dubs/**
 
@@ -10,7 +10,7 @@ It is one page of plain JavaScript that runs entirely in your browser and talks 
 
 ## What you need
 
-- A Boss RE-202 Space Echo, on system Ver. 1.10 for the per-memory reverb type (see System version below).
+- A BOSS RE-202 Space Echo, on system Ver. 1.10 for the per-memory reverb type (see System version below).
 - Chrome, or another Chromium browser.
 - A MIDI interface with 5-pin MIDI OUT and MIDI IN.
 - Two TRS **Type A** MIDI cables (see Wiring below).
@@ -99,17 +99,17 @@ The original RE-201 of 1974 had three heads, a spring reverb and a head 1 delay 
 
 ## System version
 
-Boss's system program Ver. 1.10 adds a reverb type for each memory. An older pedal still works with the editor, with one reverb type for all memories and without the presets that name Hall, Plate, Room or Ambience.
+BOSS's system program Ver. 1.10 adds a reverb type for each memory. An older pedal still works with the editor, with one reverb type for all memories and without the presets that name Hall, Plate, Room or Ambience.
 
 - **Check the version:** hold the [MEMORY] button while plugging in power. MEMORY 3 lit is 1.10; MEMORY 1 or 2 lit is older.
-- **Update:** download the system program from Boss and follow the instructions on that page. https://www.boss.info/us/support/by_product/re-202/updates_drivers/b462da5b-e96d-4019-9131-bc4bdca55b68
+- **Update:** download the system program from BOSS and follow the instructions on that page. https://www.boss.info/us/support/by_product/re-202/updates_drivers/b462da5b-e96d-4019-9131-bc4bdca55b68
 - **Back up from the MIDI tab first.**
 
 ## License
 
 CC BY-NC-SA 4.0. See `LICENSE`. Use it, change it and share it for free with credit to Chris De Giere (https://chrisdegiere.com); anything built from it carries the same license, and neither the editor nor its presets may be sold. Music you make with it is yours.
 
-DUBS is an independent project, not affiliated with or endorsed by Boss or Roland. Boss, Roland, RE-202 and Space Echo are trademarks of their owners.
+DUBS is an independent project, not affiliated with or endorsed by BOSS or Roland. BOSS, Roland, RE-202 and Space Echo are trademarks of their owners.
 
 ## About
 
