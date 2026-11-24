@@ -74,7 +74,7 @@ Pick a folder on the MIDI tab for your presets, backups and memory names; later 
 
 DUBS comes with 96 presets in 12 families of 8: a homage to the Roland Space Echo and the music made with it.
 
-The first six families are for a **line** input: synthesizers, drum machines and the send of a mixing desk. The other six are for **guitar**. Set Input to LINE or GUITAR on the Settings tab. Leave Direct Sound on, so each preset's Echo Vol and Reverb Vol set the mix against the dry signal; on a mixer's send, turn it off so only the echo returns.
+Six families are for **line** level (synths, drum machines, a mixer's send) and six for **guitar**; set Input to match on the Settings tab. Leave Direct Sound on, or turn it off on a mixer's send so only the echo returns. On most presets the expression pedal brings the echo in, like a dub send.
 
 | Family | For | Music | What it is |
 |---|---|---|---|
@@ -93,14 +93,7 @@ The first six families are for a **line** input: synthesizers, drum machines and
 
 The original RE-201 of 1974 had three heads, a spring reverb and a head 1 delay of roughly 70 to 180 ms. About half the presets stay inside that. The rest uses what the RE-202 adds: the fourth head, the LONG time mode out to 2 s, and the Hall, Plate, Room and Ambience reverbs.
 
-**Reading a name.** A name is built from the preset's settings: lead word, time, heads, traits. `Waterhouse 4t-150 H3 Old Hot` means a quarter-note triplet at 150 bpm on head 3, aged tape, Saturation high.
-
-- **Time** is the longest playing head's delay. `8d-140` is a dotted 1/8 at 140 bpm, from `16 16d 8 8t 8d 4 4t 5x16`. `110ms` and `1.4s` are free times. `R40` is the Repeat Rate knob at 40 with the tap time off, `R40x2` the same in the LONG time mode.
-- **Heads** are the ones playing: `H1`, `H13`, `H1234`.
-- **Traits** say where the knobs sit: Dark, Bright, Hot, Wet and the like, with the reverb named when it is up. `Old` is aged tape, `Edge` is Intensity at its ceiling, `Drip` is a lot of spring, and `Only` means the echo is off.
-- The lead word is the family, or a place: Gardens, Waterhouse, Kingston, Detroit, Bristol, Oxford.
-
-The expression pedal sweeps Echo Vol from nothing up to the preset's level, like a dub send.
+**Reading a name.** A name spells out the preset: a lead word (the family, or a place), the time, the heads that play, then traits. `Waterhouse 4t-150 H3 Old Hot` is a quarter-note triplet at 150 bpm on head 3, with aged tape and Saturation high.
 
 **Load presets**, on the Memories tab, puts all 96 on the pedal in memories 5 to 100, with four spring echoes in 1 to 4. The pedal's MEMORY button only reaches 1 to 4; recall the rest from the Memories tab or by program change.
 
